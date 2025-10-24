@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe</title>
+    <link rel="stylesheet" href="nakama-index.css">
+</head>
+<body>
+    <!-- Home Page -->
+    <div id="home" class="page">
+        <h1 id="title">TIC-TAC-TOE</h1>
+        <button id="homecontinue">Continue</button>
+    </div>
+
+    <!-- Login Page -->
+    <div id="login" class="page">
+        <div id="parent">
+            <div id="intro">
+                <p>Pick a username</p>
+            </div>
+            <hr>
+            <div id="nameHolder">
+                <input type="text" id="inputusername" placeholder="Nickname" maxlength="15">
+            </div>
+            <hr>
+            <button id="logincontinue">Continue</button>
+        </div>
+    </div>
+
+    <!-- Matchmaking Page -->
+    <div id="match" class="page">
+        <p>Finding a player...</p>
+        <button>Cancel</button>
+    </div>
+
+    <!-- Game Page -->
+    <div id="game" class="page">
+        <div id="holder">
+            <div id="players">
+                <p id="playera">ACE</p>
+                <p id="playerb">BOO</p>
+            </div>
+
+            <div id="sep">
+                <p id="sepa">(you)</p>
+                <p id="sepb">(opp)</p>
+            </div>
+
+            <div id="turn">
+                <p id="turnicon"></p>
+                <p id="turntext"></p>
+            </div>
+
+            <div id="cellContainer">
+                <div cellIndex="0" class="cell"></div>
+                <div cellIndex="1" class="cell"></div>
+                <div cellIndex="2" class="cell"></div>
+                <div cellIndex="3" class="cell"></div>
+                <div cellIndex="4" class="cell"></div>
+                <div cellIndex="5" class="cell"></div>
+                <div cellIndex="6" class="cell"></div>
+                <div cellIndex="7" class="cell"></div>
+                <div cellIndex="8" class="cell"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboard Page -->
+    <div id="leaderboard" class="page">
+        <h2>Leaderboard</h2>
+        <p id="result">You Won</p>
+
+        <div class="leaderholder">
+            <p id="user0">UserName</p>
+            <p id="points0">Points</p>
+        </div>
+        <div class="leaderholder">
+            <p id="user1">UserName</p>
+            <p id="points1">Points</p>
+        </div>
+        <div class="leaderholder">
+            <p id="user2">UserName</p>
+            <p id="points2">Points</p>
+        </div>
+
+        <button id="rematchbutton">Rematch</button>
+    </div>
+
+    <script src="nakama-index.js" type="module"></script>
+</body>
+</html>
