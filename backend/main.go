@@ -51,7 +51,7 @@ func rpcMatchFinder(ctx context.Context, logger runtime.Logger,
         db *sql.DB, nk runtime.NakamaModule, payload string) (string, error) {
         minSize := 1
         maxSize := 1
-		matchIds := make([]string, 0)
+        matchIds := make([]string, 0)
         matches, err := nk.MatchList(ctx, 1, true, "", &minSize, &maxSize, "")
         if err != nil {
                 logger.Error("Failed to fetch matches", err)
@@ -75,6 +75,7 @@ func rpcGetLeaderboard(ctx context.Context, logger runtime.Logger,
         jsonString, _ := json.Marshal(&records)
         return string(jsonString), nil
 }
+
 func (m *MathHandler) MatchInit(ctx context.Context, logger runtime.Logger,
         db *sql.DB, nk runtime.NakamaModule, params map[string]interface{}) (interface{}, int, string) {
         state := &MatchState{
@@ -106,6 +107,7 @@ func (m *MathHandler) MatchJoin(ctx context.Context, logger runtime.Logger,
                 s.Opponents = append(s.Opponents, presence.GetUsername())
                 nk.LeaderboardRecordWrite(ctx, "leaderboard", presence.GetUserId(), presence.GetUsername(), 0, 0, nil, nil)
         }
+
         if len(s.PresencesMap) == 2 {
                 time.Sleep(2 * time.Second)
                 s.Turn = s.Opponents[0]
@@ -128,12 +130,16 @@ func (m *MathHandler) MatchLoop(ctx context.Context, logger runtime.Logger, db *
         nk runtime.NakamaModule, dispatcher runtime.MatchDispatcher, tick int64, state interface{},
         messages []runtime.MatchData) interface{} {
         s := state.(*MatchState)
-        if len(messages) > 0 {
-                logger.Debug("messages length check ", messages[0].GetData())
-        }
-        if len(messages) > 0 && len(s.PresencesMap) == 2 {
+        if len(messages) > 0{
                 opCode := messages[0].GetOpCode()
                 switch opCode {
+                case 4:
+                    data := ""
+                    json.Unmarshal(messages[0].GetData(), &data)
+                    presenceList := make([]runtime.Presence,0)
+                    presenceList = append(presenceList,s.PresencesMap[data])
+                    dispatcher.MatchKick(presenceList)
+                    break;
                 case 2:
                         data := []string{}
                         err := json.Unmarshal(messages[0].GetData(), &data)
@@ -147,8 +153,6 @@ func (m *MathHandler) MatchLoop(ctx context.Context, logger runtime.Logger, db *
                                 jsonString, _ := json.Marshal(s)
                                 dispatcher.BroadcastMessage(3, []byte(jsonString), nil, nil, true)
                                 nk.LeaderboardRecordWrite(ctx, "leaderboard", s.PresencesMap[s.Winner].GetUserId(), s.Winner, 10, 0, nil, nil)
-                                time.Sleep(5 * time.Second)
-                                records, _, _, _, _ := nk.LeaderboardRecordsList(ctx, "leaderboard", nil, 10, "", 0)
                                 return nil
                         }
                         if s.Turn == s.Opponents[0] {
@@ -156,8 +160,7 @@ func (m *MathHandler) MatchLoop(ctx context.Context, logger runtime.Logger, db *
                         } else {
                                 s.Turn = s.Opponents[0]
                         }
-
-                }
+                 }
                 jsonString, err := json.Marshal(s)
                 if err != nil {
                         logger.Error("error marshaling ", err)
@@ -169,6 +172,7 @@ func (m *MathHandler) MatchLoop(ctx context.Context, logger runtime.Logger, db *
 func (m *MathHandler) MatchTerminate(ctx context.Context, logger runtime.Logger,
         db *sql.DB, nk runtime.NakamaModule, dispatcher runtime.MatchDispatcher,
         tick int64, state interface{}, graceSeconds int) interface{} {
+
         return nil
 }
 func (m *MathHandler) MatchSignal(ctx context.Context, logger runtime.Logger,

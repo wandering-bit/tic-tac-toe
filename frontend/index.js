@@ -31,7 +31,7 @@ const homeButton = document.getElementById("homecontinue");
 const loginButton = document.getElementById("logincontinue");
 const seeLeaderboardButton = document.getElementById("seeleaderboard");
 const rematchButton = document.getElementById("rematchbutton")
-
+const cancelButton = document.getElementById("cancelButton");
 
 const loginInput = document.getElementById("inputusername");
 const loginCross = document.getElementById("logincross");
@@ -57,6 +57,14 @@ var turn="";
 homeButton.addEventListener('click', () => {
     homePage.classList.remove('active');
     loginPage.classList.add('active');
+});
+
+cancelButton.addEventListener('click', () => {
+    socket.sendMatchState(matchId,4,JSON.stringify(userName));
+    matchPage.classList.remove('active');
+    leaderboardPage.classList.add('active');
+    showLeaderboardPage(null,true);
+    resultText.textContent = "";
 });
 
 rematchButton.addEventListener('click', async () => {
@@ -90,7 +98,7 @@ loginButton.addEventListener('click', async () => {
                     HandleGameMove(jsonMatchState);
                     break;
                 case 3:
-                    showLeaderboardPage(jsonMatchState);
+                    showLeaderboardPage(jsonMatchState,false);
                     break;
             }
     };
@@ -164,13 +172,15 @@ async function getLeaderboard(){
     return JSON.parse(leaderboard.payload)
 }
 
-async function showLeaderboardPage(jsonMatchState){
-    gamePage.classList.remove('active');
-    leaderboardPage.classList.add('active');
-    if(jsonMatchState.Winner!=userName){
-        resultText.textContent = "You Lost";
-    }else{
-        resultText.textContent = "You Won";
+async function showLeaderboardPage(jsonMatchState,skip){
+    if(!skip){
+        gamePage.classList.remove('active');
+        leaderboardPage.classList.add('active');
+        if(jsonMatchState.Winner!=userName){
+            resultText.textContent = "You Lost";
+        }else{
+            resultText.textContent = "You Won";
+        }
     }
     const leaderboard = await getLeaderboard();
     leaderboard.forEach((element,index) => {
