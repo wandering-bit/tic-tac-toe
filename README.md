@@ -3,7 +3,7 @@ Tic Tac Toe
 The game can be accessed on the following endpoint: 
 http://15.206.174.20/tictactoe
 
-Client Side sdk: javascript
+Client Side library: javascript
 
 Server side runtime: golang
 
