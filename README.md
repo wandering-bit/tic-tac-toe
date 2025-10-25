@@ -1,7 +1,7 @@
 Tic Tac Toe
 
 The game can be accessed on the following endpoint: 
-http://15.206.174.20/tictactoe
+http://43.204.142.87/tictactoe
 
 Client Side library: javascript
 
